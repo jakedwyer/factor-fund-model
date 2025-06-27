@@ -1,0 +1,27 @@
+# DigitalOcean App Platform Spec
+# This file is used for deploying to DigitalOcean App Platform
+# https://docs.digitalocean.com/products/app-platform/
+
+name: factor-fund-model
+region: nyc
+services:
+- environment_slug: python
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: jakedwyer/factor-fund-model
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: web
+  run_command: gunicorn --bind :8080 --workers 2 --threads 2 app:app
+  source_dir: /
+  routes:
+  - path: /
+  envs:
+  - key: PYTHON_ENV
+    value: "production"
+  health_check:
+    http_path: /
+    initial_delay_seconds: 10
+    period_seconds: 30
